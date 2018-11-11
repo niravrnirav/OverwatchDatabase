@@ -1,3 +1,17 @@
+<?php 
+    session_start(); 
+
+    /*if (!isset($_SESSION['username'])) {
+        $_SESSION['msg'] = "You must log in first";
+        header('location: login.php');
+    }*/
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['username']);
+        header("location: index.php");
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,22 +27,26 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                <a class="navbar-brand" href="#">Overwatch</a>
+                <a class="navbar-brand" href="index.php">Overwatch</a>
                 </div>
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="index.php">Home</a></li>
                     <li><a href="characterList.php">Characters</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <?php  if (isset($_SESSION['username'])) : ?>
+                        <li><a href="index.php">Welcome <strong><?=$_SESSION['username']?></strong>, <?=$_SESSION['success']?></a></li>
+                        <li><a href="index.php?logout='1'" style="color: red;">logout</a></li>
+                    <?php else: ?>
+                        <li><a href="register.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <?php endif ?>
                 </ul>
             </div>
         </nav> 
         <div>
             <p>This site contains information about the playable heroes in Overwatch. If you are a user, you can view all the detailed information about each hero.</p>
-        </div>          
-        
+        </div>
         <div class="footer-margin">
             <footer>
                 <div class="container">

@@ -1,6 +1,15 @@
-<?php 
-    require('authentication.php');
+<?php
+    session_start();
     require('connect.php');
+    if (!isset($_SESSION['username'])) {
+        $_SESSION['msg'] = "You must log in first";
+        header('location: login.php');
+    }
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['username']);
+        header("location: index.php");
+    }
 
     $select_query = 'SELECT * FROM hero';
     $statement = $db->prepare($select_query);
@@ -25,15 +34,15 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                <a class="navbar-brand" href="#">Overwatch</a>
+                <a class="navbar-brand" href="index.php">Overwatch</a>
                 </div>
                 <ul class="nav navbar-nav">
                     <li><a href="index.php">Home</a></li>
                     <li class="active"><a href="characterList.php">Characters</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li><a href="register.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                 </ul>
             </div>
         </nav> 
@@ -45,7 +54,7 @@
                 <tr>
                     <th>Hero</th>
                     <th onclick="sortTable(0)">Name <i class="NameUp"></i><i class="NameDown"></i></th>
-                    <th onclick="sortTable(1)">Role <i class="RoleUp"></i><i class="RoleDown"></i></th>
+                    <th>Role <i class="RoleUp"></i><i class="RoleDown"></i></th>
                 </tr>
             </thead>
             <?php foreach($status as $query) :?>
