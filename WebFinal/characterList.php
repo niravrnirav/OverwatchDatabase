@@ -100,7 +100,7 @@
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="age">Age:</label>
                     <div class="col-sm-10">
-                        <input class="form-control" placeholder="Age" name="age">
+                        <input type="number" class="form-control" placeholder="Age" name="age">
                     </div>
                 </div>
                 <div class="form-group">
