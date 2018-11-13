@@ -37,12 +37,17 @@
                 <a class="navbar-brand" href="index.php">Overwatch</a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li><a href="index.php">Home</a></li>
-                    <li class="active"><a href="characterList.php">Characters</a></li>
+                    <li class="active"><a href="index.php">Home</a></li>
+                    <li><a href="characterList.php">Characters</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="register.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <?php  if (isset($_SESSION['username'])) : ?>
+                        <li><a href="index.php">Welcome <strong><?=$_SESSION['username']?></strong>, <?=$_SESSION['success']?></a></li>
+                        <li><a href="index.php?logout='1'" style="color: red;">logout</a></li>
+                    <?php else: ?>
+                        <li><a href="register.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                        <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <?php endif ?>
                 </ul>
             </div>
         </nav> 
@@ -72,7 +77,7 @@
         <div>
         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Insert New Hero</button>
         <div id="demo" class="collapse">
-            <form action="process.php" class="form-horizontal" action="/action_page.php" method='post' enctype='multipart/form-data'>
+            <form action="process.php" class="form-horizontal"  method='post' enctype='multipart/form-data'>
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="name">Hero Name:</label>
                     <div class="col-sm-10">

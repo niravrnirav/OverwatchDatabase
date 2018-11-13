@@ -1,6 +1,9 @@
 <?php
-
+    include 'php-image-resize-master\lib\ImageResize.php';
+    use \Gumlet\ImageResize;
     //IMAGE CHECK
+    $img = "";
+    print_r($_FILES['image']);
     function file_upload_path($original_filename, $upload_subfolder_name = 'images')
     {
         $current_folder = dirname(__FILE__);
@@ -29,8 +32,14 @@
         $temporary_image_path = $_FILES['image']['tmp_name'];
         $file_type = $_FILES['image']['type'];
         $new_image_path = file_upload_path($_FILES['image']['name']);
+        
         if (file_is_an_image($temporary_image_path, $new_image_path)) {
             move_uploaded_file($temporary_image_path, $new_image_path);
+            $img = $image_filename;
+
+            $medImage = new ImageResize(file_upload_path($image_filename . "." . $image_fileExtention));
+            $medImage->resize(100,90);
+            $medImage->save(file_upload_path($image_filename . "." . $image_fileExtention));
         }
     }
 
@@ -51,7 +60,7 @@
         $query = "INSERT INTO hero (Name, Image, Role) values (:hero, :img, :hero)";
         $statement = $db->prepare($query);
         $statement->bindValue(':hero', $heroName);
-        $statement->bindValue(':img', pathinfo($_FILES['image']['name'], PATHINFO_FILENAME));
+        $statement->bindValue(':img', $img);
         $statement->bindValue(':role', $role);
         $statement->execute();
 

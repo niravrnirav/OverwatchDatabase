@@ -1,7 +1,7 @@
 <?php
 session_start();
 require('connect.php');
-// initializing variables
+
 $username = "";
 $email    = "";
 $errors = array(); 
@@ -47,7 +47,7 @@ if (isset($_POST['reg_user'])) {
         }
     }
 
-    // Finally, register user if there are no errors in the form
+    // Register user if there are no errors in the form
     if (count($errors) == 0) {
         $password = password_hash($password_1, PASSWORD_DEFAULT);//encrypt the password before saving in the database
 

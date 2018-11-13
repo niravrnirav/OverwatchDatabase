@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="images/overwatch.png" alt="Overwatch">
+        <a href="index.php"><img src="images/overwatch.png" alt="Overwatch"></a>
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">

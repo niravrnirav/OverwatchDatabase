@@ -68,7 +68,7 @@ body {
   border-radius: 10px 10px 0px 0px;
   padding: 20px;
 }
-form, .content {
+.reglog, .content {
   width: 30%;
   margin: 0px auto;
   padding: 20px;
