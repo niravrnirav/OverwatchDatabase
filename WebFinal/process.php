@@ -69,7 +69,6 @@
         $statement2->execute();
         $status = $statement2->fetch();
 
-        echo $status['HeroId'];
         $detailInsert = "INSERT INTO detail ( HeroId, RealName, Occupation, Age, BaseOfOperation, Affiliation) VALUES (:id, :realName, :occupation, :age, :base, :affiliation)";
         $statement3 = $db->prepare($detailInsert);
         $statement3->bindValue(':id', $status['HeroId']);
@@ -85,11 +84,12 @@
     elseif($_POST['command'] == "Update")
     {
         require('connect.php');
-        $query = "UPDATE hero SET Name = :hero, Role = :role WHERE HeroId = :id";
+        $query = "UPDATE hero SET Name = :hero, Image = :img, Role = :role WHERE HeroId = :id";
         $statement = $db->prepare($query);
         $statement->bindValue(':hero', $heroName);
         $statement->bindValue(':role', $role);
         $statement->bindValue(':id', $id, PDO::PARAM_INT);
+        $statement->bindValue(':img', $img);
         $statement->execute();
 
         $detailUpdate = "UPDATE detail SET RealName = :realName, Occupation = :occupation, Age = :age, BaseOfOperation = :base, Affiliation = :affiliation WHERE HeroId = :id";
@@ -101,6 +101,16 @@
         $statement2->bindValue(':affiliation', $affiliation);
         $statement2->bindValue(':id', $id, PDO::PARAM_INT);
         $statement2->execute();
+        
+        //Delete image if the box is checked
+        if (isset($_POST['imagedel'])) {
+            $imgquery = "UPDATE hero SET Image = :nullImage WHERE HeroID = :heroid ";;
+            $stat = $db->prepare($imgquery);
+            $stat->bindValue(':nullImage', '');
+            $stat->bindValue(':heroid', $id, PDO::PARAM_INT);
+            $stat->execute();
+        }
+
         header("Location: characterList.php");
         exit;
     }
@@ -114,4 +124,6 @@
         header("Location: characterList.php");
         exit;
     }
+
+    
 ?>

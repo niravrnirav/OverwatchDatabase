@@ -11,10 +11,52 @@
         header("location: index.php");
     }
 
-    $select_query = 'SELECT * FROM hero';
-    $statement = $db->prepare($select_query);
+    $select_query = '';
+    $statement = '';
+    $status = '';
+    $rowperpage = 5;
+    $row = 0;
+    $enablePageLink = "none";
+    if (isset($_GET['searchResult'])) {
+        // Previous Button
+        if(isset($_POST['but_prev'])){
+            $row = $_POST['row'];
+            $row -= $rowperpage;
+            if( $row < 0 ){
+                $row = 0;
+            }
+        }
+
+        // Next Button
+        if(isset($_POST['but_next'])){
+            $row = $_POST['row'];
+            $allcount = $_POST['allcount'];
+            $val = $row + $rowperpage;
+            if( $val < $allcount ){
+                $row = $val;
+            }
+        }
+
+        $searchString = "%" . $_GET['searchResult'] . "%";
+
+        $count_query = "SELECT COUNT(*) AS rowCount FROM hero WHERE Name LIKE :search OR Role LIKE :search";
+        $statement = $db->prepare($count_query);
+        $statement->bindValue(':search', $searchString);      
+        $statement->execute();
+        $status = $statement->fetch();
+        $allcount = $status['rowCount'];
+        $enablePageLink = ($allcount > 5)? "inline-block" : "none";
+        $select_query = "SELECT * FROM hero WHERE Name LIKE :search OR Role LIKE :search LIMIT $row,".$rowperpage;
+        $statement = $db->prepare($select_query);
+        $statement->bindValue(':search', $searchString);
+    }
+    else{
+        $select_query = 'SELECT * FROM hero';
+        $statement = $db->prepare($select_query);
+    }
     $statement->execute();
     $status = $statement->fetchAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +81,12 @@
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="index.php">Home</a></li>
                     <li><a href="characterList.php">Characters</a></li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <form method=post action="searchProcess.php">
+                        <li><input name="search_text" id="search_text" style="color:black" placeholder="search hero"></li>
+                        <li><input type="submit" name="search" style="color:black" value="Search" /></li>
+                    </form>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <?php  if (isset($_SESSION['username'])) : ?>
@@ -66,14 +114,26 @@
                 <tbody>
                     <tr>
                         <?php $var = $query['Image'] . ".png"?>
-                        <td><img src=<?="images/".$var?> height="90" width="100"></td>
-                        <td><a href="page.php?HeroId=<?=$query['HeroId']?>"><?=$query['Name']?></a></td>
-                        <td><a href="page.php?HeroId=<?=$query['HeroId']?>"><?=$query['Role']?></a></td>
+                        <?php if($var == '.png'): ?>
+                            <td>no image</td>
+                        <?php else: ?>
+                            <td><img src=<?="images/".$var?> height="90" width="100"></td>
+                        <?php endif ?>
+                        <td><a href="page.php?HeroId=<?=$query['HeroId']?>&slug=<?=$query['slug']?>"><?=$query['Name']?></a></td>
+                        <td><a href="page.php?HeroId=<?=$query['HeroId']?>&slug=<?=$query['slug']?>"><?=$query['Role']?></a></td>
                         <td><a href="edit.php?HeroId=<?=$query['HeroId']?>">edit</a></td>
                     </tr>
                 </tbody>
             <?php endforeach ?>
         </table>
+        <form method="post" action="" style="display:<?=$enablePageLink?>">
+            <div id="div_pagination" style="color:black">
+                <input type="hidden" name="row" value="<?php echo $row; ?>">
+                <input type="hidden" name="allcount" value="<?php echo $allcount; ?>">
+                <input type="submit" class="button" name="but_prev" value="Previous">
+                <input type="submit" class="button" name="but_next" value="Next">
+            </div>
+        </form>
         <div>
         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Insert New Hero</button>
         <div id="demo" class="collapse">

@@ -101,6 +101,21 @@
                     <input class="form-control" placeholder="Affiliation" name="affiliation" value="<?=$detailStatus['Affiliation']?>">
                 </div>
             </div>
+            <div class="form-group">
+                <label for="image" class="control-label col-sm-2">Image Filename:</label>
+                <?php if ($status['Image'] == '.png' or $status['Image'] == '') :?>
+                    <input type="file" name="image" id="image">
+                <?php else :?>
+                    <div class="col-sm-10">
+                        <?php $var = $status['Image'] . ".png"?>
+                        <img src=<?="images/".$var?> height="90" width="100">
+                    </div>
+                    <label for="imagedel" class="control-label col-sm-2">Delete Image:</label>
+                    <div class="col-sm-10">
+                        <input type="checkbox" name="imagedel" value="imagedel">
+                    </div>
+                <?php endif ?>
+            </div>
             <div class="form-group">        
                 <div class="col-sm-offset-2 col-sm-10">
                     <input type="hidden" name="id" value="<?=$status['HeroId']?>" />

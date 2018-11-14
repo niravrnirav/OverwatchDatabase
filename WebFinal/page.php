@@ -9,8 +9,7 @@
         session_destroy();
         unset($_SESSION['username']);
         header("location: index.php");
-    }
-
+    }   
     $id = filter_input(INPUT_GET, 'HeroId', FILTER_SANITIZE_NUMBER_INT);
     
     $query = "SELECT * FROM detail WHERE HeroId = :id";
